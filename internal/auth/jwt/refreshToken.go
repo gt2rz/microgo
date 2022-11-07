@@ -1,4 +1,4 @@
-package auth_jwt
+package jwt
 
 import (
 	"fmt"
@@ -7,14 +7,14 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-func CreateToken(kid string) (string, error) {
+func RefreshToken(kid string) (string, error) {
 
 	token := jwt.New(jwt.SigningMethodHS256)
 
 	claims := token.Claims.(jwt.MapClaims)
 
 	// signature := authJWT.setSignature(kid)
-	signature := setSignature("")
+	signature := SetSignature("")
 
 	now := time.Now()
 

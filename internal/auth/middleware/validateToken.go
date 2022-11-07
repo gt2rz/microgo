@@ -1,12 +1,12 @@
-package auth_jwt
+package middleware
 
 import (
 	"net/http"
 
 	"github.com/dgrijalva/jwt-go"
-)
 
-// "os"
+	authJWT "microgo/internal/auth/jwt"
+)
 
 func ValidateToken(next func(w http.ResponseWriter, r *http.Request)) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -20,7 +20,7 @@ func ValidateToken(next func(w http.ResponseWriter, r *http.Request)) http.Handl
 					w.Write([]byte("Not authorized"))
 				}
 
-				signature := setSignature("")
+				signature := authJWT.SetSignature("")
 
 				return signature, nil
 			})

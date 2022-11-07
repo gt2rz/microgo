@@ -1,20 +1,26 @@
 package auth
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
 
 	"github.com/google/uuid"
 
-	authJWT "microgo/internal/auth/auth_jwt"
+	authJWT "microgo/internal/auth/jwt"
 )
 
-// type response struct {
-// 	token  string `json:"token"`
-// 	code   int16  `json:"code"`
-// 	status bool   `json:"status"`
-// }
+type data struct {
+	Token     string `json:"token"`
+	ExpiredAt int64  `json:"expiredAt`
+}
+
+type response struct {
+	Code   int16 `json:"code"`
+	Status bool  `json:"status"`
+	Data   data  `json:"data"`
+}
 
 func Login(w http.ResponseWriter, r *http.Request) {
 	api_key := os.Getenv("API_KEY")
@@ -25,14 +31,28 @@ func Login(w http.ResponseWriter, r *http.Request) {
 			return
 		} else {
 			kid := uuid.New().String() // from DB
-			token, err := authJWT.CreateToken(kid)
+
+			tokenData, err := authJWT.CreateToken(kid)
+
 			if err != nil {
 				fmt.Printf("Error creating JWT")
-
 				return
 			}
 
-			fmt.Fprintf(w, token)
+			r := &response{
+				Code: http.StatusOK,
+				Data: data{
+					Token:     tokenData.Token,
+					ExpiredAt: tokenData.ExpiredAt,
+				},
+				Status: true,
+			}
+
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusOK)
+
+			json.NewEncoder(w).Encode(r)
+
 		}
 	}
 }

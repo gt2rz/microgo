@@ -8,16 +8,10 @@ import (
 	"microgo/internal/auth"
 	"microgo/internal/utils"
 
-	authJWT "microgo/internal/auth/auth_jwt"
+	M "microgo/internal/auth/middleware"
+
+	C "microgo/internal/controllers"
 )
-
-func Home(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Super secret area")
-}
-
-func Refresh(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Refresh super secret area")
-}
 
 func main() {
 
@@ -25,7 +19,7 @@ func main() {
 
 	PORT := os.Getenv("APP_PORT")
 
-	http.HandleFunc("/api/v0.1/", authJWT.ValidateToken(Home))
+	http.HandleFunc("/api/v0.1/", M.ValidateToken(C.Home))
 	http.HandleFunc("/api/v0.1/login", auth.Login)
 	// http.HandleFunc("/api/v1/refresh", auth.Refresh)
 

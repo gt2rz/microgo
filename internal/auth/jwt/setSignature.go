@@ -1,10 +1,10 @@
-package auth_jwt
+package jwt
 
 import (
 	"os"
 )
 
-func setSignature(sign string) []byte {
+func SetSignature(sign string) []byte {
 	secret := os.Getenv("ACCESS_SECRET")
 
 	return []byte(secret + sign)
